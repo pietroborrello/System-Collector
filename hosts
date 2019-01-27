@@ -1,2 +1,2 @@
 [ubuntu-servers]
-172.16.237.171	ansible_user=user
+user	ansible_host=172.16.237.171	ansible_user=user

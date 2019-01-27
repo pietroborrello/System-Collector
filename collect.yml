@@ -2,9 +2,6 @@
 - hosts: ubuntu-servers
   become: yes
 
-  vars_files:
-    - encrypted_password
-
   roles:
     - system-collector
   
