@@ -2,7 +2,7 @@
 # tasks file for system-collector
 
 - name: Gathering installed packages
-  shell: dpkg -l
+  command: dpkg -l
   register: installed_packages
 - debug: 
     var: installed_packages.stdout 
@@ -14,25 +14,27 @@
     var: firewall_rules.stdout 
 
 - name: Gathering running services
-  shell: service --status-all
+  shell: service --status-all | awk {'print $4'}
+  args:
+    warn: false
   register: running_services
 - debug: 
     var: running_services.stdout 
 
 - name: Gathering open ports
-  shell: netstat -tupan
+  command: netstat -tupan
   register: open_ports
 - debug: 
     var: open_ports.stdout 
 
 - name: Gathering routing table
-  shell: ip route
+  command: ip route
   register: routing_table
 - debug: 
     var: routing_table.stdout 
 
 - name: Gathering syslog
-  shell: tail -n 10 /var/log/syslog
+  command: tail -n 10 /var/log/syslog
   register: syslog 
 - debug: 
     var: syslog.stdout 
