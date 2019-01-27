@@ -1,7 +1,7 @@
 galaxy_info:
-  author: your name
-  description: your description
-  company: your company (optional)
+  author: Pietro Borrello
+  description: System information collector
+  company: Sapienza University of Rome
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
