@@ -1,0 +1,38 @@
+---
+# tasks file for system-collector
+
+- name: Gathering installed packages
+  shell: dpkg -l
+  register: installed_packages
+- debug: 
+    var: installed_packages.stdout 
+
+- name: Gathering firewall rules
+  shell: iptables -Lv | true
+  register: firewall_rules
+- debug: 
+    var: firewall_rules.stdout 
+
+- name: Gathering running services
+  shell: service --status-all
+  register: running_services
+- debug: 
+    var: running_services.stdout 
+
+- name: Gathering open ports
+  shell: netstat -tupan
+  register: open_ports
+- debug: 
+    var: open_ports.stdout 
+
+- name: Gathering routing table
+  shell: ip route
+  register: routing_table
+- debug: 
+    var: routing_table.stdout 
+
+- name: Gathering syslog
+  shell: tail -n 10 /var/log/syslog
+  register: syslog 
+- debug: 
+    var: syslog.stdout 

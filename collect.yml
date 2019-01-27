@@ -1,0 +1,12 @@
+---
+- hosts: ubuntu-servers
+  become: yes
+
+  roles:
+    - system-collector
+  
+  vars_prompt:
+    - name: "ansible_become_pass"
+      prompt: "Sudo password"
+      private: yes
+
