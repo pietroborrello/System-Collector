@@ -1,2 +1,4 @@
 ---
 # vars file for system-collector
+
+windows_to_csv: Export-Csv -Path $env:temp\ansible_tmp_file -NoTypeInformation; Get-Content -Path $env:temp\ansible_tmp_file; Remove-Item –Path $env:temp\ansible_tmp_file

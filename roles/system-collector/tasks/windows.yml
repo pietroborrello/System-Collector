@@ -6,7 +6,7 @@
   become: no
 
 - name: Gathering installed packages
-  win_shell: Get-WmiObject -Class Win32_Product | Select-Object Name, Version | Export-Csv -Path $env:temp\ansible_tmp_file -NoTypeInformation; Get-Content -Path $env:temp\ansible_tmp_file; Remove-Item –Path $env:temp\ansible_tmp_file
+  win_shell: Get-WmiObject -Class Win32_Product | Select-Object Name, Version | {{ windows_to_csv }}
   register: installed_packages
 - name: Saving installed packages
   local_action: copy content={{ installed_packages.stdout }} dest=output/{{ inventory_hostname }}/installed_packages.csv
@@ -15,7 +15,7 @@
 #     var: installed_packages.stdout 
 
 - name: Gathering firewall rules
-  win_shell: Get-NetFirewallRule -Enabled True | Sort Direction,ApplicationName,DisplayName | Select-Object DisplayName, Name, Action,Direction,Protocol, LocalPorts,ApplicationName | Export-Csv -Path $env:temp\ansible_tmp_file -NoTypeInformation; Get-Content -Path $env:temp\ansible_tmp_file; Remove-Item –Path $env:temp\ansible_tmp_file
+  win_shell: Get-NetFirewallRule -Enabled True | Sort Direction,ApplicationName,DisplayName | Select-Object DisplayName, Name, Action,Direction,Protocol, LocalPorts,ApplicationName | {{ windows_to_csv }}
   register: firewall_rules
 - name: Saving firewall rules
   local_action: copy content={{ firewall_rules.stdout }} dest=output/{{ inventory_hostname }}/firewall_rules.csv
@@ -23,19 +23,19 @@
 # - debug: 
 #     var: firewall_rules.stdout 
 
-- name: Gathering running services
-  win_shell: Get-Service | Select-Object Name, Status | Export-Csv -Path $env:temp\ansible_tmp_file -NoTypeInformation; Get-Content -Path $env:temp\ansible_tmp_file; Remove-Item –Path $env:temp\ansible_tmp_file
+- name: Gathering services
+  win_shell: Get-Service | Select-Object Name, Status | {{ windows_to_csv }}
   args:
     warn: false
-  register: running_services
-- name: Saving running services
-  local_action: copy content={{ running_services.stdout }} dest=output/{{ inventory_hostname }}/running_services.csv
+  register: services
+- name: Saving services
+  local_action: copy content={{ services.stdout }} dest=output/{{ inventory_hostname }}/services.csv
   become: no
 # - debug: 
-#     var: running_services.stdout 
+#     var: services.stdout 
 
 - name: Gathering open ports
-  win_shell: Get-NetTCPConnection | ? {($_.State -eq "Listen") -and ($_.RemoteAddress -eq "0.0.0.0")} | Select-Object LocalAddress, LocalPort, @{Name="PID";         Expression={ $_.OwningProcess }}, @{Name="ProcessName"; Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).ProcessName }}, @{Name="UserName";    Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).UserName }} | Export-Csv -Path $env:temp\ansible_tmp_file -NoTypeInformation; Get-Content -Path $env:temp\ansible_tmp_file; Remove-Item –Path $env:temp\ansible_tmp_file
+  win_shell: Get-NetTCPConnection | ? {($_.State -eq "Listen") -and ($_.RemoteAddress -eq "0.0.0.0")} | Select-Object LocalAddress, LocalPort, @{Name="PID"; Expression={ $_.OwningProcess }}, @{Name="ProcessName"; Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).ProcessName }}, @{Name="UserName";    Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).UserName }} | {{ windows_to_csv }}
   register: open_ports
 - name: Saving open ports
   local_action: copy content={{ open_ports.stdout }} dest=output/{{ inventory_hostname }}/open_ports.csv
@@ -44,7 +44,7 @@
 #     var: open_ports.stdout 
 
 - name: Gathering connected networks
-  win_shell: ip addr | grep "inet " | awk 'BEGIN{print "Networks"}; {print $2}'
+  win_shell: Get-NetIPAddress | Select-Object IPAddress, PrefixLength | {{ windows_to_csv }}
   register: connected_networks
 - name: Saving connected networks
   local_action: copy content={{ connected_networks.stdout }} dest=output/{{ inventory_hostname }}/connected_networks.csv
@@ -53,7 +53,7 @@
 #     var: connected_networks.stdout 
 
 - name: Gathering routing table
-  win_shell: route -n | awk 'FNR>1 {print $1","$2","$3}'
+  win_shell: Get-NetRoute | Select-Object DestinationPrefix, NextHop | {{ windows_to_csv }}
   register: routing_table
 - name: Saving routing table
   local_action: copy content={{ routing_table.stdout }} dest=output/{{ inventory_hostname }}/routing_table.csv
@@ -62,7 +62,7 @@
 #     var: routing_table.stdout 
 
 - name: Gathering syslog
-  win_shell: tail -n 10 /var/log/syslog
+  win_shell: Get-EventLog -LogName System -Newest 10
   register: syslog 
 - name: Saving syslog
   local_action: copy content={{ syslog.stdout }} dest=output/{{ inventory_hostname }}/syslog.txt

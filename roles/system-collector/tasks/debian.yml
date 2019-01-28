@@ -23,16 +23,16 @@
 # - debug: 
 #     var: firewall_rules.stdout 
 
-- name: Gathering running services
+- name: Gathering services
   shell: service --status-all | sed 's/\[ + \]/Running/; s/\[ - \]/Stopped/; s/\[ \? \]/Upstart/;' | awk 'BEGIN{print "Name,Status"}; {print $2","$1}'
   args:
     warn: false
-  register: running_services
-- name: Saving running services
-  local_action: copy content={{ running_services.stdout }} dest=output/{{ inventory_hostname }}/running_services.csv
+  register: services
+- name: Saving services
+  local_action: copy content={{ services.stdout }} dest=output/{{ inventory_hostname }}/services.csv
   become: no
 # - debug: 
-#     var: running_services.stdout 
+#     var: services.stdout 
 
 - name: Ensuring lsof installed on the target system
   package:
