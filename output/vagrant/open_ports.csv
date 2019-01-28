@@ -1,0 +1,8 @@
+COMMAND,USER,NODE,NAME
+systemd-r,systemd-resolve,UDP,127.0.0.53:53
+systemd-r,systemd-resolve,TCP,127.0.0.53:53
+sshd,root,TCP,*:22
+sshd,root,TCP,*:22
+systemd-n,systemd-network,UDP,10.0.2.15:68
+sshd,root,TCP,192.168.33.10:22->192.168.33.1:55252
+sshd,vagrant,TCP,192.168.33.10:22->192.168.33.1:55252

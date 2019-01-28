@@ -1,0 +1,16 @@
+COMMAND,USER,NODE,NAME
+avahi-dae,avahi,UDP,*:5353
+avahi-dae,avahi,UDP,*:5353
+avahi-dae,avahi,UDP,*:33830
+avahi-dae,avahi,UDP,*:42373
+sshd,root,TCP,*:22
+sshd,root,TCP,*:22
+dnsmasq,nobody,UDP,127.0.1.1:53
+dnsmasq,nobody,TCP,127.0.1.1:53
+dnsmasq,nobody,UDP,*:38276
+cupsd,root,TCP,[::1]:631
+cupsd,root,TCP,127.0.0.1:631
+cups-brow,root,UDP,*:631
+dhclient,root,UDP,*:68
+sshd,root,TCP,172.16.237.171:22->172.16.237.1:55251
+sshd,user,TCP,172.16.237.171:22->172.16.237.1:55251
