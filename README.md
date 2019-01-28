@@ -39,4 +39,11 @@ ansible-playbook -i hosts collect.yml --ask-vault-pass
 ```
 You will obtain the output in `output/<HOSTNAME>`
 
+### Known Bugs
+
+If running Ansible on macOS against Windows host, a current Python bug (just the python shipped with homebrew) prevents the system working. To fix execute:
+```
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+```
+
 

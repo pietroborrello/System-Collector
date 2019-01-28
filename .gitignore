@@ -1,3 +1,4 @@
+output/*
 vault.txt
 *.swp
-output/*
+*.retry

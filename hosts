@@ -1,3 +1,11 @@
 [ubuntu-servers]
 user	ansible_host=172.16.237.171	ansible_user=user
 vagrant	ansible_host=192.168.33.10	ansible_user=vagrant
+
+[windows-servers]
+IEUser	ansible_host=172.16.237.163	ansible_user=IEUser
+
+[windows-servers:vars]
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+ansible_become=no
