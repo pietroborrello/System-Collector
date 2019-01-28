@@ -1,40 +1,71 @@
 ---
 # tasks file for system-collector
 
+- name: Creating output directory
+  local_action: file path=collected/{{ inventory_hostname }} state=directory
+  become: no
+
 - name: Gathering installed packages
-  command: dpkg -l
+  shell: dpkg -l | awk 'FNR>3 && FNR!=5 {print $2","$3}'
   register: installed_packages
-- debug: 
-    var: installed_packages.stdout 
+- name: Saving installed packages
+  local_action: copy content={{ installed_packages.stdout }} dest=collected/{{ inventory_hostname }}/installed_packages.csv
+  become: no
+# - debug: 
+#     var: installed_packages.stdout 
 
 - name: Gathering firewall rules
   shell: iptables -Lv | true
   register: firewall_rules
-- debug: 
-    var: firewall_rules.stdout 
+- name: Saving firewall rules
+  local_action: copy content={{ firewall_rules.stdout }} dest=collected/{{ inventory_hostname }}/firewall_rules.txt
+  become: no
+# - debug: 
+#     var: firewall_rules.stdout 
 
 - name: Gathering running services
-  shell: service --status-all | awk {'print $4'}
+  shell: service --status-all | awk 'BEGIN{print "Service"}; {print $4}'
   args:
     warn: false
   register: running_services
-- debug: 
-    var: running_services.stdout 
+- name: Saving running services
+  local_action: copy content={{ running_services.stdout }} dest=collected/{{ inventory_hostname }}/running_services.csv
+  become: no
+# - debug: 
+#     var: running_services.stdout 
 
 - name: Gathering open ports
-  command: netstat -tupan
+  shell: lsof -iTCP -iUDP -P -n | awk '{print $1","$3","$8","$9}'
   register: open_ports
-- debug: 
-    var: open_ports.stdout 
+- name: Saving open ports
+  local_action: copy content={{ open_ports.stdout }} dest=collected/{{ inventory_hostname }}/open_ports.csv
+  become: no
+# - debug: 
+#     var: open_ports.stdout 
+
+- name: Gathering connected networks
+  shell: ip addr | grep "inet " | awk 'BEGIN{print "Networks"}; {print $2}'
+  register: connected_networks
+- name: Saving connected networks
+  local_action: copy content={{ connected_networks.stdout }} dest=collected/{{ inventory_hostname }}/connected_networks.csv
+  become: no
+# - debug: 
+#     var: connected_networks.stdout 
 
 - name: Gathering routing table
-  command: ip route
+  shell: route -n | awk 'FNR>1 {print $1","$2","$3}'
   register: routing_table
-- debug: 
-    var: routing_table.stdout 
+- name: Saving routing table
+  local_action: copy content={{ routing_table.stdout }} dest=collected/{{ inventory_hostname }}/routing_table.csv
+  become: no
+# - debug: 
+#     var: routing_table.stdout 
 
 - name: Gathering syslog
   command: tail -n 10 /var/log/syslog
   register: syslog 
-- debug: 
-    var: syslog.stdout 
+- name: Saving syslog
+  local_action: copy content={{ syslog.stdout }} dest=collected/{{ inventory_hostname }}/syslog.txt
+  become: no
+# - debug: 
+#     var: syslog.stdout 
