@@ -6,7 +6,7 @@
   become: no
 
 - name: Gathering installed packages
-  shell: dpkg -l | awk 'BEGIN{print "Name,Version"}; FNR>5 {print $2","$3}'
+  shell: dpkg -l | awk 'BEGIN{print "Name,Version"}; FNR>5 {print $2","$3}' | sed 's/,[[:digit:]]\+:/,/; s/\(ubuntu\|[-~+]\)[^,]*$//'
   register: installed_packages
 - name: Saving installed packages
   local_action: copy content={{ installed_packages.stdout }} dest=output/{{ inventory_hostname }}/installed_packages.csv

@@ -46,4 +46,14 @@ If running Ansible on macOS against Windows host, a current Python bug (just the
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 ```
 
+#### CVE
+Search for CVEs using:
+```
+https://cve.circl.lu/api/cvefor/<cpe>
+```
+as:
+```
+https://cve.circl.lu/api/cvefor/cpe:2.3:a:openssl:openssl:1.0.2g
+```
+
 
