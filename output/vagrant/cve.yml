@@ -1,0 +1,69 @@
+gnupg:
+  version: 2.2.4
+  cve:
+  - id: CVE-2018-9234
+    cvss: '5.0'
+    cwe: CWE-320
+npm:
+  version: 3.5.2
+  cve:
+  - id: CVE-2016-3956
+    cvss: 5.0
+    cwe: CWE-200
+openssl:
+  version: 1.1.0g
+  cve:
+  - id: CVE-2017-3738
+    cvss: '4.3'
+    cwe: CWE-200
+  - id: CVE-2018-0732
+    cvss: '5.0'
+    cwe: CWE-320
+  - id: CVE-2018-0733
+    cvss: '4.3'
+    cwe: CWE-20
+  - id: CVE-2018-0734
+    cvss: 4.3
+    cwe: CWE-320
+  - id: CVE-2018-0735
+    cvss: 4.3
+    cwe: CWE-320
+  - id: CVE-2018-0737
+    cvss: '4.3'
+    cwe: CWE-310
+  - id: CVE-2018-0739
+    cvss: '4.3'
+    cwe: CWE-400
+python:
+  version: 2.7.15
+  cve:
+  - id: CVE-2018-14647
+    cvss: 5.0
+    cwe: CWE-399
+qemu:
+  version: '2.11'
+  cve:
+  - id: CVE-2017-15124
+    cvss: '7.8'
+    cwe: CWE-20
+  - id: CVE-2017-18043
+    cvss: '2.1'
+    cwe: CWE-190
+  - id: CVE-2018-16867
+    cvss: 4.6
+    cwe: CWE-22
+  - id: CVE-2018-18954
+    cvss: 2.1
+    cwe: CWE-787
+zsh:
+  version: 5.4.2
+  cve:
+  - id: CVE-2018-1071
+    cvss: '2.1'
+    cwe: CWE-119
+  - id: CVE-2018-1083
+    cvss: '7.2'
+    cwe: CWE-119
+  - id: CVE-2018-1100
+    cvss: '7.2'
+    cwe: CWE-119

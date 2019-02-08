@@ -1,0 +1,249 @@
+imagemagick:
+  version: 6.8.9.9
+  cve:
+  - id: CVE-2014-9832
+    cvss: 6.8
+    cwe: CWE-119
+  - id: CVE-2014-9833
+    cvss: 6.8
+    cwe: CWE-119
+  - id: CVE-2014-9834
+    cvss: 6.8
+    cwe: CWE-119
+  - id: CVE-2014-9835
+    cvss: 6.8
+    cwe: CWE-119
+  - id: CVE-2014-9836
+    cvss: 4.3
+    cwe: CWE-119
+  - id: CVE-2014-9838
+    cvss: 4.3
+    cwe: ''
+  - id: CVE-2014-9839
+    cvss: 5.0
+    cwe: CWE-119
+  - id: CVE-2014-9840
+    cvss: 4.3
+    cwe: CWE-119
+  - id: CVE-2015-8900
+    cvss: 4.3
+    cwe: CWE-20
+  - id: CVE-2015-8901
+    cvss: 4.3
+    cwe: CWE-20
+  - id: CVE-2015-8902
+    cvss: 4.3
+    cwe: CWE-20
+  - id: CVE-2015-8903
+    cvss: 4.3
+    cwe: CWE-20
+  - id: CVE-2017-17499
+    cvss: 7.5
+    cwe: CWE-416
+  - id: CVE-2017-17504
+    cvss: 4.3
+    cwe: CWE-119
+  - id: CVE-2018-16323
+    cvss: 4.3
+    cwe: CWE-200
+  - id: CVE-2018-16328
+    cvss: 7.5
+    cwe: CWE-476
+  - id: CVE-2018-16329
+    cvss: 7.5
+    cwe: CWE-476
+  - id: CVE-2018-20467
+    cvss: 4.3
+    cwe: CWE-399
+  - id: CVE-2018-6405
+    cvss: 4.3
+    cwe: CWE-399
+mercurial:
+  version: 3.7.3
+  cve:
+  - id: CVE-2016-3105
+    cvss: 6.8
+    cwe: CWE-284
+  - id: CVE-2017-17458
+    cvss: 10.0
+    cwe: CWE-78
+  - id: CVE-2018-13346
+    cvss: 5.0
+    cwe: CWE-20
+  - id: CVE-2018-13347
+    cvss: 7.5
+    cwe: CWE-190
+  - id: CVE-2018-13348
+    cvss: 5.0
+    cwe: CWE-20
+  - id: CVE-2018-17983
+    cvss: 6.4
+    cwe: CWE-125
+netpbm:
+  version: '10.0'
+  cve:
+  - id: CVE-2005-2978
+    cvss: 7.5
+    cwe: Unknown
+  - id: CVE-2005-3632
+    cvss: 4.6
+    cwe: Unknown
+  - id: CVE-2008-4799
+    cvss: 4.3
+    cwe: CWE-189
+  - id: CVE-2009-4274
+    cvss: 7.5
+    cwe: CWE-119
+nmap:
+  version: '7.01'
+  cve:
+  - id: CVE-2018-1000161
+    cvss: 3.5
+    cwe: CWE-22
+openssl:
+  version: 1.0.2g
+  cve:
+  - id: CVE-2016-2105
+    cvss: 5.0
+    cwe: CWE-189
+  - id: CVE-2016-2106
+    cvss: 5.0
+    cwe: CWE-189
+  - id: CVE-2016-2107
+    cvss: 2.6
+    cwe: CWE-200
+  - id: CVE-2016-2109
+    cvss: 7.8
+    cwe: CWE-399
+  - id: CVE-2016-2176
+    cvss: 6.4
+    cwe: CWE-119
+  - id: CVE-2016-2177
+    cvss: 7.5
+    cwe: CWE-190
+  - id: CVE-2016-2178
+    cvss: 2.1
+    cwe: CWE-200
+  - id: CVE-2016-2179
+    cvss: 5.0
+    cwe: CWE-399
+  - id: CVE-2016-2180
+    cvss: 5.0
+    cwe: CWE-125
+  - id: CVE-2016-2181
+    cvss: 5.0
+    cwe: CWE-189
+  - id: CVE-2016-2182
+    cvss: 7.5
+    cwe: CWE-787
+  - id: CVE-2016-6302
+    cvss: 5.0
+    cwe: CWE-20
+  - id: CVE-2016-6303
+    cvss: 7.5
+    cwe: CWE-787
+  - id: CVE-2016-8610
+    cvss: 5.0
+    cwe: CWE-399
+  - id: CVE-2017-3736
+    cvss: 4.0
+    cwe: CWE-200
+  - id: CVE-2017-3737
+    cvss: 4.3
+    cwe: CWE-388
+  - id: CVE-2017-3738
+    cvss: 4.3
+    cwe: CWE-200
+  - id: CVE-2018-0732
+    cvss: 5.0
+    cwe: CWE-320
+  - id: CVE-2018-0734
+    cvss: 4.3
+    cwe: CWE-320
+  - id: CVE-2018-0737
+    cvss: 4.3
+    cwe: CWE-310
+  - id: CVE-2018-0739
+    cvss: 4.3
+    cwe: CWE-400
+perl:
+  version: 5.22.1
+  cve:
+  - id: CVE-2016-1238
+    cvss: 7.2
+    cwe: CWE-264
+python:
+  version: 2.7.12
+  cve:
+  - id: CVE-2014-4616
+    cvss: 4.3
+    cwe: CWE-119
+  - id: CVE-2018-1060
+    cvss: 5.0
+    cwe: CWE-399
+  - id: CVE-2018-1061
+    cvss: 5.0
+    cwe: CWE-399
+  - id: CVE-2018-14647
+    cvss: 5.0
+    cwe: CWE-399
+qemu:
+  version: '2.5'
+  cve:
+  - id: CVE-2016-2392
+    cvss: 2.1
+    cwe: Unknown
+  - id: CVE-2016-2538
+    cvss: 3.6
+    cwe: CWE-189
+  - id: CVE-2016-2841
+    cvss: 2.1
+    cwe: CWE-20
+  - id: CVE-2016-9602
+    cvss: 9.0
+    cwe: CWE-59
+  - id: CVE-2016-9603
+    cvss: 9.0
+    cwe: CWE-119
+  - id: CVE-2017-15118
+    cvss: 7.5
+    cwe: CWE-787
+  - id: CVE-2017-15119
+    cvss: 5.0
+    cwe: CWE-400
+  - id: CVE-2017-18043
+    cvss: 2.1
+    cwe: CWE-190
+  - id: CVE-2017-2620
+    cvss: 9.0
+    cwe: CWE-787
+  - id: CVE-2017-2630
+    cvss: 6.5
+    cwe: CWE-119
+  - id: CVE-2017-7539
+    cvss: 5.0
+    cwe: CWE-20
+  - id: CVE-2018-16867
+    cvss: 4.6
+    cwe: CWE-22
+  - id: CVE-2018-18954
+    cvss: 2.1
+    cwe: CWE-787
+rsyslog:
+  version: 8.16.0
+  cve:
+  - id: CVE-2018-16881
+    cvss: 5.0
+    cwe: CWE-20
+unixodbc:
+  version: 2.3.1
+  cve:
+  - id: CVE-2012-2657
+    cvss: 2.1
+    cwe: CWE-119
+  - id: CVE-2012-2658
+    cvss: 2.1
+    cwe: CWE-119
+  - id: CVE-2018-7409
+    cvss: 7.5
+    cwe: CWE-119

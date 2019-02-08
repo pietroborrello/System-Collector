@@ -1,4 +1,4 @@
-output/*
 vault.txt
 *.swp
 *.retry
+cpe.sqlite3

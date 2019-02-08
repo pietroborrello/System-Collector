@@ -1,0 +1,11 @@
+"LocalAddress","LocalPort","PID","ProcessName","UserName"
+"0.0.0.0","49675","640","lsass","NT AUTHORITY\SYSTEM"
+"0.0.0.0","49672","624","services",
+"0.0.0.0","49667","1468","spoolsv","NT AUTHORITY\SYSTEM"
+"0.0.0.0","49666","1388","svchost","NT AUTHORITY\SYSTEM"
+"0.0.0.0","49665","1068","svchost","NT AUTHORITY\LOCAL SERVICE"
+"0.0.0.0","49664","488","wininit",
+"0.0.0.0","5040","4340","svchost","NT AUTHORITY\LOCAL SERVICE"
+"172.16.237.163","139","4","System",
+"0.0.0.0","135","876","svchost","NT AUTHORITY\NETWORK SERVICE"
+"0.0.0.0","22","4396","sshd","MSEDGEWIN10\sshd_server"

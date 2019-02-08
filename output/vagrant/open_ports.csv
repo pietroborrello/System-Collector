@@ -1,0 +1,3 @@
+systemd-r,systemd-resolve,TCP,127.0.0.53:53
+sshd,root,TCP,*:22
+sshd,root,TCP,*:22

@@ -1,0 +1,5 @@
+cupsd,root,TCP,[::1]:631
+cupsd,root,TCP,127.0.0.1:631
+sshd,root,TCP,*:22
+sshd,root,TCP,*:22
+dnsmasq,nobody,TCP,127.0.1.1:53
