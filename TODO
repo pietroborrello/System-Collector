@@ -1,0 +1,12 @@
+opensuse:
+- PermitRootLogin yes (in /etc/ssh/sshd_config)
+- dpkg alternative
+- service reparse
+
+centos:
+- PasswordAuthentication yes, PermitRootLogin yes (in /etc/ssh/sshd_config)
+
+alpine:
+- PermitRootLogin yes (in /etc/ssh/sshd_config)
+- install python (apk add python3)
+- install lsof (not busybox version) (apk add lsof)

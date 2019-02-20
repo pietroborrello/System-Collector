@@ -1,0 +1,14 @@
+installed_packages_cmd: dpkg -l | awk 'BEGIN{print "Name,Version"}; FNR>5 {print $2","$3}' | sed 's/,[[:digit:]]\+:/,/; s/\(ubuntu\|[-~+]\)[^,]*$//'
+
+firewall_rules_cmd: iptables -Lv | true
+
+services_cmd: service --status-all | sed 's/\[ + \]/Running/; s/\[ - \]/Stopped/; s/\[ \? \]/Upstart/;' | awk 'BEGIN{print "Name,Status"}; {print $2","$1}'
+
+open_ports_cmd: lsof -iTCP -P -n | grep LISTEN | awk '{print $1","$3","$8","$9}'
+
+connected_networks_cmd: ip addr | grep "inet " | awk 'BEGIN{print "Networks"}; {print $2}'
+
+routing_table_cmd: route -n | awk 'FNR>1 {print $1","$2","$3}'
+
+syslog_cmd: tail -n 100 /var/log/syslog
+
