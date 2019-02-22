@@ -4,6 +4,7 @@
 - name: set os-specific variables
   include_vars: '{{ item }}'
   with_first_found:
+    - "{{ ansible_distribution | lower}}.yml"
     - "{{ ansible_os_family | lower}}.yml"
     - default.yml
 

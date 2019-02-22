@@ -10,3 +10,8 @@ alpine:
 - PasswordAuthentication yes, PermitRootLogin yes (in /etc/ssh/sshd_config) and then service sshd restart
 - install python (apk add python3)
 - install lsof (not busybox version) (apk add lsof)
+
+
+### SEND TO PASTEBIN
+
+echo 'prova' | pbincli send -f output.zip | awk '/PasteID:/ {printf "%s", $2}; /Password/ {printf "\#%s", $2}'

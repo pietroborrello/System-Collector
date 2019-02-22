@@ -66,7 +66,7 @@
 #     var: routing_table.stdout 
 
 - name: Gathering syslog
-  command: "{{ syslog_cmd }}"
+  shell: "{{ syslog_cmd }}"
   register: syslog 
 - name: Saving syslog
   local_action: copy content={{ syslog.stdout }} dest=output/{{ inventory_hostname }}/syslog.txt
