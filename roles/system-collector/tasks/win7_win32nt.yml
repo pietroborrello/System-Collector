@@ -1,0 +1,86 @@
+---
+# tasks file for system-collector for windows hosts
+
+- name: Creating output directory
+  local_action: file path=output/{{ inventory_hostname }} state=directory
+  become: no
+
+- name: Gathering installed packages
+  win_shell: Get-WmiObject -Class Win32_Product | Select-Object Name, Version | {{ windows_to_csv }}
+  register: installed_packages
+- name: Saving installed packages
+  local_action: copy content={{ installed_packages.stdout }} dest=output/{{ inventory_hostname }}/installed_packages.csv
+  become: no
+# - debug: 
+#     var: installed_packages.stdout 
+
+- name: Gathering firewall rules
+  win_shell: |
+    $Output = @(netsh advfirewall firewall show rule name=all)
+    $Object = New-Object -Type PSObject
+    
+    $Output | Where {$_ -match '^([^:]+):s*(S.*)$' } | Foreach -Begin {
+    $FirstRun = $true
+    $HashProps = @{}
+    } -Process {
+    if (($Matches[1] -eq 'Rule Name') -and (!($FirstRun))) {
+    New-Object -TypeName PSCustomObject -Property $HashProps
+    
+    $HashProps = @{}
+    } $HashProps.$($Matches[1]) = $Matches[2]
+    $FirstRun = $false
+    } -End {
+    New-Object -TypeName PSCustomObject -Property $HashProps} | where Enabled -eq 'Yes' | Sort Direction,RuleName | Select-Object RuleName, Action,Direction,Protocol, LocalPort, RemotePort | {{ windows_to_csv }}
+  register: firewall_rules
+- name: Saving firewall rules
+  local_action: copy content={{ firewall_rules.stdout }} dest=output/{{ inventory_hostname }}/firewall_rules.csv
+  become: no
+# - debug: 
+#     var: firewall_rules.stdout 
+
+- name: Gathering services
+  win_shell: Get-Service | Select-Object Name, Status | {{ windows_to_csv }}
+  args:
+    warn: false
+  register: services
+- name: Saving services
+  local_action: copy content={{ services.stdout }} dest=output/{{ inventory_hostname }}/services.csv
+  become: no
+# - debug: 
+#     var: services.stdout 
+
+- name: Gathering open ports
+  win_shell: Get-NetTCPConnection | ? {($_.State -eq "Listen") -and ($_.RemoteAddress -eq "0.0.0.0")} | Select-Object LocalAddress, LocalPort, @{Name="PID"; Expression={ $_.OwningProcess }}, @{Name="ProcessName"; Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).ProcessName }}, @{Name="UserName";    Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).UserName }} | {{ windows_to_csv }}
+  register: open_ports
+- name: Saving open ports
+  local_action: copy content={{ open_ports.stdout }} dest=output/{{ inventory_hostname }}/open_ports.csv
+  become: no
+# - debug: 
+#     var: open_ports.stdout 
+
+- name: Gathering connected networks
+  win_shell: Get-NetIPAddress | Select-Object IPAddress, PrefixLength | {{ windows_to_csv }}
+  register: connected_networks
+- name: Saving connected networks
+  local_action: copy content={{ connected_networks.stdout }} dest=output/{{ inventory_hostname }}/connected_networks.csv
+  become: no
+# - debug: 
+#     var: connected_networks.stdout 
+
+- name: Gathering routing table
+  win_shell: Get-NetRoute | Select-Object DestinationPrefix, NextHop | {{ windows_to_csv }}
+  register: routing_table
+- name: Saving routing table
+  local_action: copy content={{ routing_table.stdout }} dest=output/{{ inventory_hostname }}/routing_table.csv
+  become: no
+# - debug: 
+#     var: routing_table.stdout 
+
+- name: Gathering syslog
+  win_shell: Get-EventLog -LogName System -Newest 10
+  register: syslog 
+- name: Saving syslog
+  local_action: copy content={{ syslog.stdout }} dest=output/{{ inventory_hostname }}/syslog.txt
+  become: no
+# - debug: 
+#     var: syslog.stdout 

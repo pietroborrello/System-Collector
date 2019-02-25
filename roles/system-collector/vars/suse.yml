@@ -1,4 +1,4 @@
-installed_packages_cmd: rpm -qa --qf "%{NAME},%{VERSION}\n" | awk 'BEGIN{print "Name,Version"}'
+installed_packages_cmd: rpm -qa --qf "%{NAME},%{VERSION}\n" | awk 'BEGIN{print "Name,Version"}; {print}'
 
 firewall_rules_cmd: iptables -Lv | true
 
