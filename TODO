@@ -1,19 +1,19 @@
-opensuse:
-- PasswordAuthentication yes, PermitRootLogin yes (in /etc/ssh/sshd_config) and then service sshd restart
-- dpkg alternative
-- service reparse
-
-centos:
+any linux:
 - PasswordAuthentication yes, PermitRootLogin yes (in /etc/ssh/sshd_config) and then service sshd restart
 
-alpine:
-- PasswordAuthentication yes, PermitRootLogin yes (in /etc/ssh/sshd_config) and then service sshd restart
-- install python (apk add python3)
+also for alpine:
+- install python (apk add python)
 - install lsof (not busybox version) (apk add lsof)
 
-windows7:
-- name: win32nt.yml
-- Get-NetFirewallRule not found
+windows8 and 2012 in a powershell ADMIN console:
+```
+$url = "https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1"
+$file = "$env:temp\ConfigureRemotingForAnsible.ps1"
+
+(New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file)
+
+powershell.exe -ExecutionPolicy ByPass -File $file
+```
 
 
 ### SEND TO PASTEBIN
