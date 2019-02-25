@@ -11,6 +11,10 @@ alpine:
 - install python (apk add python3)
 - install lsof (not busybox version) (apk add lsof)
 
+windows7:
+- name: win32nt.yml
+- Get-NetFirewallRule not found
+
 
 ### SEND TO PASTEBIN
 
