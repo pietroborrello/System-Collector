@@ -62,7 +62,7 @@
 #     var: routing_table.stdout 
 
 - name: Gathering syslog
-  win_shell: Get-EventLog -LogName System -Newest 10
+  win_shell: Get-EventLog -LogName System -Newest 100
   register: syslog 
 - name: Saving syslog
   local_action: copy content={{ syslog.stdout }} dest=output/{{ inventory_hostname }}/syslog.txt
