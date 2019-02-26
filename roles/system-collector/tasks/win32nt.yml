@@ -15,7 +15,35 @@
 #     var: installed_packages.stdout 
 
 - name: Gathering firewall rules
-  win_shell: Get-NetFirewallRule -Enabled True | Sort Direction,ApplicationName,DisplayName | Select-Object DisplayName, Name, Action,Direction,Protocol, LocalPorts,ApplicationName | {{ windows_to_csv }}
+  win_shell: |
+    $Rules = netsh advfirewall firewall show rule name="all"
+    $return = @()
+     $HAsh = [Ordered]@{}
+        foreach ($Rule in $Rules){
+         
+            if ($Rule -match '^Rule Name:\s+(?<RuleName>.+$)'){
+              $Hash.RuleName = $Matches.RuleName
+            }Else{
+              if ($Rule -notmatch "----------------------------------------------------------------------"){
+                switch -Regex ($Rule){
+                  '^Rule Name:\s+(?<RuleName>.*$)'{$Hash.RuleName = $MAtches.RuleName;Break}
+                  '^Enabled:\s+(?<Enabled>.*$)'{$Hash.Enabled = $MAtches.Enabled;Break}
+                  '^Action:\s+(?<Action>.*$)'{$Hash.Action = $MAtches.Action;Break}
+                  '^Direction:\s+(?<Direction>.*$)'{$Hash.Direction = $MAtches.Direction;Break}
+                  '^Profiles:\s+(?<Profiles>.*$)'{$Hash.Profiles = $MAtches.Profiles;Break}
+                  '^Grouping:\s+(?<Grouping>.*$)'{$Hash.Grouping = $MAtches.Grouping;Break}
+                  '^LocalIP:\s+(?<LocalIP>.*$)'{$Hash.LocalIP = $MAtches.LocalIP;Break}
+                  '^RemoteIP:\s+(?<RemoteIP>.*$)'{$Hash.RemoteIP = $MAtches.RemoteIP;Break}
+                  '^Protocol:\s+(?<Protocol>.*$)'{$Hash.Protocol = $MAtches.Protocol;Break}
+                  '^LocalPort:\s+(?<LocalPort>.*$)'{$Hash.LocalPort = $MAtches.LocalPort;Break}
+                  '^RemotePort:\s+(?<RemotePort>.*$)'{$Hash.RemotePort = $MAtches.RemotePort;Break}
+                  '^Edge traversal:\s+(?<Edge_traversal>.*$)'{$Hash.Edge_traversal = $MAtches.Edge_traversal;$obj = New-Object psobject -Property $Hash;$return += $obj;Break}
+                  default {Break}
+                }
+              }
+            }
+        }
+     $return | where Enabled -eq 'Yes' | Sort Direction,RuleName | Select-Object RuleName, Action,Direction,Protocol, LocalPort, RemotePort | {{ windows_to_csv }}
   register: firewall_rules
 - name: Saving firewall rules
   local_action: copy content={{ firewall_rules.stdout }} dest=output/{{ inventory_hostname }}/firewall_rules.csv
@@ -35,7 +63,31 @@
 #     var: services.stdout 
 
 - name: Gathering open ports
-  win_shell: Get-NetTCPConnection | ? {($_.State -eq "Listen") -and ($_.RemoteAddress -eq "0.0.0.0")} | Select-Object LocalAddress, LocalPort, @{Name="PID"; Expression={ $_.OwningProcess }}, @{Name="ProcessName"; Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).ProcessName }}, @{Name="UserName";    Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).UserName }} | {{ windows_to_csv }}
+  win_shell: |
+    $data = netstat -oan
+    $result = @()
+    
+    $data = $data[4..$data.count]
+
+    foreach ($line in $data)
+    {
+      $line = $line -replace '^\s+', ''
+      
+      $line = $line -split '\s+'
+      
+      $properties = @{
+        Protocol = $line[0]
+        LocalAddressIP = ($line[1] -split ":")[0]
+        LocalAddressPort = ($line[1] -split ":")[1]
+        ForeignAddressIP = ($line[2] -split ":")[0]
+        ForeignAddressPort = ($line[2] -split ":")[1]
+        State = $line[3]
+        OwningProcess = $line[4]
+      }
+      
+      $result += New-Object -TypeName PSObject -Property $properties
+    }
+    $result | ? {($_.State -eq "LISTENING") -and ($_.ForeignAddressIP -eq "0.0.0.0")} | Select-Object LocalAddressIP, LocalAddressPort, @{Name="PID"; Expression={ $_.OwningProcess }}, @{Name="ProcessName"; Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).ProcessName }}, @{Name="UserName";    Expression={ (Get-Process -PID $_.OwningProcess -IncludeUserName).UserName }} | {{ windows_to_csv }}
   register: open_ports
 - name: Saving open ports
   local_action: copy content={{ open_ports.stdout }} dest=output/{{ inventory_hostname }}/open_ports.csv
@@ -44,7 +96,7 @@
 #     var: open_ports.stdout 
 
 - name: Gathering connected networks
-  win_shell: Get-NetIPAddress | Select-Object IPAddress, PrefixLength | {{ windows_to_csv }}
+  win_shell: Get-WmiObject -Class Win32_NetworkAdapterConfiguration -Filter 'IPEnabled = True' | Select-Object @{Name="IPAddress"; Expression={ $_.IPAddress[0] }} | {{ windows_to_csv }}
   register: connected_networks
 - name: Saving connected networks
   local_action: copy content={{ connected_networks.stdout }} dest=output/{{ inventory_hostname }}/connected_networks.csv
@@ -53,7 +105,7 @@
 #     var: connected_networks.stdout 
 
 - name: Gathering routing table
-  win_shell: Get-NetRoute | Select-Object DestinationPrefix, NextHop | {{ windows_to_csv }}
+  win_shell: gwmi win32_IP4RouteTable | Select-Object Destination, Mask, NextHop | {{ windows_to_csv }}
   register: routing_table
 - name: Saving routing table
   local_action: copy content={{ routing_table.stdout }} dest=output/{{ inventory_hostname }}/routing_table.csv
