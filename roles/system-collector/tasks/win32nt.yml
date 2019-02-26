@@ -15,50 +15,41 @@
 #     var: installed_packages.stdout 
 
 - name: Gathering firewall rules
-  block:
-  - name: Gathering firewall rules ()
-    win_shell: Get-NetFirewallRule -Enabled True | Sort Direction,ApplicationName,DisplayName | Select-Object DisplayName, Name, Action,Direction,Protocol, LocalPorts,ApplicationName | {{ windows_to_csv }}
-    register: firewall_rules
-  - name: Saving firewall rules
-    local_action: copy content={{ firewall_rules.stdout }} dest=output/{{ inventory_hostname }}/firewall_rules.csv
-    become: no
-  rescue:
-  - name: Gathering firewall rules (Win7 compatibility mode)
-    win_shell: |
-      $Rules = netsh advfirewall firewall show rule name="all"
-      $return = @()
-      $HAsh = [Ordered]@{}
-          foreach ($Rule in $Rules){
-          
-              if ($Rule -match '^Rule Name:\s+(?<RuleName>.+$)'){
-                $Hash.RuleName = $Matches.RuleName
-              }Else{
-                if ($Rule -notmatch "----------------------------------------------------------------------"){
-                  switch -Regex ($Rule){
-                    '^Rule Name:\s+(?<RuleName>.*$)'{$Hash.RuleName = $MAtches.RuleName;Break}
-                    '^Enabled:\s+(?<Enabled>.*$)'{$Hash.Enabled = $MAtches.Enabled;Break}
-                    '^Action:\s+(?<Action>.*$)'{$Hash.Action = $MAtches.Action;Break}
-                    '^Direction:\s+(?<Direction>.*$)'{$Hash.Direction = $MAtches.Direction;Break}
-                    '^Profiles:\s+(?<Profiles>.*$)'{$Hash.Profiles = $MAtches.Profiles;Break}
-                    '^Grouping:\s+(?<Grouping>.*$)'{$Hash.Grouping = $MAtches.Grouping;Break}
-                    '^LocalIP:\s+(?<LocalIP>.*$)'{$Hash.LocalIP = $MAtches.LocalIP;Break}
-                    '^RemoteIP:\s+(?<RemoteIP>.*$)'{$Hash.RemoteIP = $MAtches.RemoteIP;Break}
-                    '^Protocol:\s+(?<Protocol>.*$)'{$Hash.Protocol = $MAtches.Protocol;Break}
-                    '^LocalPort:\s+(?<LocalPort>.*$)'{$Hash.LocalPort = $MAtches.LocalPort;Break}
-                    '^RemotePort:\s+(?<RemotePort>.*$)'{$Hash.RemotePort = $MAtches.RemotePort;Break}
-                    '^Edge traversal:\s+(?<Edge_traversal>.*$)'{$Hash.Edge_traversal = $MAtches.Edge_traversal;$obj = New-Object psobject -Property $Hash;$return += $obj;Break}
-                    default {Break}
-                  }
+  win_shell: |
+    $Rules = netsh advfirewall firewall show rule name="all"
+    $return = @()
+    $HAsh = [Ordered]@{}
+        foreach ($Rule in $Rules){
+        
+            if ($Rule -match '^Rule Name:\s+(?<RuleName>.+$)'){
+              $Hash.RuleName = $Matches.RuleName
+            }Else{
+              if ($Rule -notmatch "----------------------------------------------------------------------"){
+                switch -Regex ($Rule){
+                  '^Rule Name:\s+(?<RuleName>.*$)'{$Hash.RuleName = $MAtches.RuleName;Break}
+                  '^Enabled:\s+(?<Enabled>.*$)'{$Hash.Enabled = $MAtches.Enabled;Break}
+                  '^Action:\s+(?<Action>.*$)'{$Hash.Action = $MAtches.Action;Break}
+                  '^Direction:\s+(?<Direction>.*$)'{$Hash.Direction = $MAtches.Direction;Break}
+                  '^Profiles:\s+(?<Profiles>.*$)'{$Hash.Profiles = $MAtches.Profiles;Break}
+                  '^Grouping:\s+(?<Grouping>.*$)'{$Hash.Grouping = $MAtches.Grouping;Break}
+                  '^LocalIP:\s+(?<LocalIP>.*$)'{$Hash.LocalIP = $MAtches.LocalIP;Break}
+                  '^RemoteIP:\s+(?<RemoteIP>.*$)'{$Hash.RemoteIP = $MAtches.RemoteIP;Break}
+                  '^Protocol:\s+(?<Protocol>.*$)'{$Hash.Protocol = $MAtches.Protocol;Break}
+                  '^LocalPort:\s+(?<LocalPort>.*$)'{$Hash.LocalPort = $MAtches.LocalPort;Break}
+                  '^RemotePort:\s+(?<RemotePort>.*$)'{$Hash.RemotePort = $MAtches.RemotePort;Break}
+                  '^Edge traversal:\s+(?<Edge_traversal>.*$)'{$Hash.Edge_traversal = $MAtches.Edge_traversal;$obj = New-Object psobject -Property $Hash;$return += $obj;Break}
+                  default {Break}
                 }
               }
-          }
-      $return | where Enabled -eq 'Yes' | Sort Direction,RuleName | Select-Object RuleName, Action,Direction,Protocol, LocalPort, RemotePort | {{ windows_to_csv }}
-    register: firewall_rules
-  - name: Saving firewall rules
-    local_action: copy content={{ firewall_rules.stdout }} dest=output/{{ inventory_hostname }}/firewall_rules.csv
-    become: no
-  # - debug: 
-  #     var: firewall_rules.stdout 
+            }
+        }
+    $return | where Enabled -eq 'Yes' | Sort Direction,RuleName | Select-Object RuleName, Action,Direction,Protocol, LocalPort, RemotePort | {{ windows_to_csv }}
+  register: firewall_rules
+- name: Saving firewall rules
+  local_action: copy content={{ firewall_rules.stdout }} dest=output/{{ inventory_hostname }}/firewall_rules.csv
+  become: no
+# - debug: 
+#     var: firewall_rules.stdout 
 
 - name: Gathering services
   win_shell: Get-Service | Select-Object Name, Status | {{ windows_to_csv }}
