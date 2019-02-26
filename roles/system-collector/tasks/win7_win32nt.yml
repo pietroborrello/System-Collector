@@ -28,7 +28,7 @@
                 switch -Regex ($Rule){
                   '^Rule Name:\s+(?<RuleName>.*$)'{$Hash.RuleName = $MAtches.RuleName;Break}
                   '^Enabled:\s+(?<Enabled>.*$)'{$Hash.Enabled = $MAtches.Enabled;Break}
-                  '^Allow:\s+(?<Allow>.*$)'{$Hash.Allow = $MAtches.Allow;Break}
+                  '^Action:\s+(?<Action>.*$)'{$Hash.Action = $MAtches.Action;Break}
                   '^Direction:\s+(?<Direction>.*$)'{$Hash.Direction = $MAtches.Direction;Break}
                   '^Profiles:\s+(?<Profiles>.*$)'{$Hash.Profiles = $MAtches.Profiles;Break}
                   '^Grouping:\s+(?<Grouping>.*$)'{$Hash.Grouping = $MAtches.Grouping;Break}
