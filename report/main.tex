@@ -130,7 +130,7 @@ The {\tt include\_tasks} directive includes the right module either for Linux sy
 Thanks to the fact that Ansible is also able to distinguish between different linux distributions, the {\tt linux.yml} tasks too are implemented in a modular fashion through ansible {\tt facts}. While the sequence of actions to perform is defined by the {\tt linux.yml} itself, the exact command to execute on the host through SSH is defined based on the {\tt ansible\_distribution fact} that will select the right command for the right operating system distribution. For example to gather the installed packages for each host in {\tt linux.yml} we have:
 
 \begin{Verbatim}[commandchars=\\\(\)]
-# in tasks/main.yml
+# in tasks/linux.yml
 
 - (\color(blue)name): Gathering installed packages
   (\color(blue)shell): "{{ installed_packages_cmd }}"
