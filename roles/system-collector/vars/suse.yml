@@ -1,6 +1,6 @@
 installed_packages_cmd: rpm -qa --qf "%{NAME},%{VERSION}\n" | awk 'BEGIN{print "Name,Version"}; {print}'
 
-firewall_rules_cmd: iptables -Lv | true
+firewall_rules_cmd: iptables -L -v
 
 services_cmd: systemctl list-units --type service | awk 'BEGIN{print "Name,Status"}; NF==0 {exit}; FNR>1 {print $1","$4}'
 

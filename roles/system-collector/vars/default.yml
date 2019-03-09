@@ -1,6 +1,6 @@
 installed_packages_cmd: dpkg -l | awk 'BEGIN{print "Name,Version"}; FNR>5 {print $2","$3}' | sed 's/,[[:digit:]]\+:/,/; s/\(ubuntu\|[-~+]\)[^,]*$//'
 
-firewall_rules_cmd: iptables -Lv | true
+firewall_rules_cmd: iptables -L -v
 
 services_cmd: service --status-all | sed 's/\[ + \]/Running/; s/\[ - \]/Stopped/; s/\[ \? \]/Upstart/;' | awk 'BEGIN{print "Name,Status"}; {print $2","$1}'
 

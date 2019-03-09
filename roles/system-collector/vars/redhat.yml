@@ -1,6 +1,6 @@
 installed_packages_cmd: yum -C list installed | awk 'BEGIN{print "Name,Version"}; {if(ok==1) {print $1","$2}}; /Installed Packages/ {ok=1};' | sed 's/\...*,/,/'
 
-firewall_rules_cmd: iptables -Lv | true
+firewall_rules_cmd: iptables -L -v
 
 services_cmd: systemctl list-units --type service | awk 'BEGIN{print "Name,Status"}; NF==0 {exit}; FNR>1 {print $1","$4}'
 
