@@ -1,6 +1,6 @@
 installed_packages_cmd: apk -v info | awk 'BEGIN{print "Name,Version"}; {print}' | sed 's/-\([[:digit:]].*\)$/,\1/'
 
-firewall_rules_cmd: iptables -L -v
+firewall_rules_cmd: iptables-save
 
 services_cmd: rc-status -Cs | awk 'BEGIN{print "Name,Status"}; {print $1","$3}'
 
