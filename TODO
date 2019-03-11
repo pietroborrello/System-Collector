@@ -4,6 +4,7 @@ any linux:
 also for alpine:
 - install python (apk add python)
 - install lsof (not busybox version) (apk add lsof)
+- install iptables (apk add iptables)
 
 windows8,10 and 2012 in a powershell ADMIN console:
 ```

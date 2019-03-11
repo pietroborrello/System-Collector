@@ -80,14 +80,72 @@ We define explicit support to the following systems:
 
 Compatibility with similar systems is likely, but not guaranteed. However, is highly probable that only small changes will be needed to extend the implementation to other OSes, as it will be more clear in the next sections. 
 
-\section{System Overview} 
+\section{Ansible Overview} 
 
-We implemented the system leveraging ansible roles and playbooks. A role is a set of task that the ansible server must perform, in order, and logging the result for each of them.  A playbook is simply a mapping from a set of roles to a set of hosts on which applying a role. 
+We implemented the system leveraging the Ansible platform, designing the server that will have to collect state information on all the hosts.
+The Ansible platform is a orchestration engine specifically designed to manage different hosts in parallel, to ease the job of performing repetitive tasks on a great number of hosts. It is able to run the specified list of commands against the desired set of hosts transparently. 
+
+Each command issued by ansible is effectively executed by an ansible module, that is no more than a collection of functionalities to control system resources (i.e. the {\tt package} module to install a package). A call to a module with a set of parameters is defined as a {\tt task} (i.e. install the {\tt vim} package through the {\tt package} module, and collect the result). 
+
+Issuing a task to all the hosts in a set, it's just a matter of executing the following command with ansible:
+
+\begin{verbatim}
+$ ansible all -i hosts -m [MODULE] -a [ARGS]
+\end{verbatim}
+
+A task in ansible describes the desired state to be reached after command execution so, for example, to ensure that the {\tt vim} package is installed on all the hosts, and to install if missing, we would run:
+
+\begin{verbatim}
+$ ansible all -i hosts -m package -a "name=vim state=present"
+\end{verbatim}
+
+Vice-versa, to uninstall a package, ensuring that all the host will reach the state of the package not being present in the system, we would run:
+
+\begin{verbatim}
+$ ansible all -i hosts -m package -a "name=nano state=absent"
+\end{verbatim}
+
+Since it would be inefficient to restrict ourselves on running a single task at a time, ansible aggregates tasks to be executed in a playbook. A playbook describes the list of tasks to be executed against the hosts, calling the underlying modules to perform the commands. Additionally the playbook contains a name for each task, so that ansible will report a short readable summary of tasks execution. 
+A example of a playbook could be:
+
+\begin{verbatim}
+# playbook.yaml
+- hosts: all
+  tasks:
+    - name: Ensuring good editors are installed
+      package: name=vim state=present
+      
+    - name: Ensuring evil editors are not installed
+      package: name=nano state=absent
+\end{verbatim}
+
+That describes the overall state that the system should reach at the end of the execution and Ansible will issue the right commands on each host to ensure the state is reached.
+A playbook can be issued simply calling:
+
+\begin{verbatim}
+$ ansible-playbook playbook.yml
+\end{verbatim}
+
+And can additionally be extended with variables, to alter playbook execution, depending on different factors (i.e. install different packages depending on the OS)
+
+Ansible supports roles, that are no more than a modularisation of a playbook. It's a self contained list of tasks, with their own metadata, that can be included in any playbook, to enhance the playbook functionalities, running the tasks defined in the role. A playbook can include and use multiple roles, to be able to build and combine functionalities on top of others. 
 
 \bigskip
-Our ansible system has to deal both with different operating system distributions (as Ubuntu, CentOS, SuperAlpine and so on) but also with different operating system families (as Linux or Windows), making the task of transparently collect the state independently from the underlying system, a challenging task. 
+Each Ansible role is defined by different parts:
 
-Fortunately ansible automatically collects the so called {\tt facts}, at the first connection to each host. {\tt Facts} includes the characteristics that Ansible is able to gather for each hosts, as the operating system family and distribution. Leveraging {\tt facts variables}, that are evaluated at runtime with the value of the corresponding fact for each host, we are able to differentiate which command to execute for each host type. For example when ansible connects to a Debian host, any instance of the variable {\tt ansible\_os\_family} in the task to execute will be evaluated as ``debian''.
+\begin{itemize}
+\item tasks - the main list of tasks to be executed by the role.
+\item handlers - which may be used by this role, to implement callback mechanism.
+\item defaults - default variables for the role.
+\item vars - other variables for the role.
+\item files - which can be statically deployed via this role.
+\item templates - templates which can be dynamically deployed via this role.
+\item meta - role metadata.
+\end{itemize}
+
+To deal with all the possible differences that the hosts ansible has to connect to, may have, Ansible automatically collects the so called {\tt facts} at the first connection to each host. Ansible {\tt facts} gather all the information that ansible is able to get from the host, including the operating system family and distribution, the underlying architecture, the path of the commands that will have to execute, the interfaces to connect to, and so on. 
+
+All the ansible {\tt facts} for each hosts are available as variables during playbook execution. For example when ansible connects to a Debian host, any instance of the variable {\tt ansible\_os\_family} in the task to execute will be evaluated as ``debian''.
 
 \bigskip
 The execution model of ansible can be simplified imaging that the ansible server connects in parallel through SSH to each host in the {\tt host} file and performs the following actions:
@@ -100,19 +158,9 @@ The execution model of ansible can be simplified imaging that the ansible server
 \end{enumerate}
 
 \bigskip
-Each Ansible role is defined by different parts:
+Our ansible system has to deal both with different operating system distributions (as Ubuntu, CentOS, SuperAlpine and so on) but also with different operating system families (as Linux or Windows), making the task of transparently collect the state independently from the underlying system, a challenging task. 
+ Leveraging {\tt facts variables}, that are evaluated at runtime with the value of the corresponding fact for each host, we are able to differentiate which command to execute for each host type. 
 
-\begin{itemize}
-\item tasks - the main list of tasks to be executed by the role.
-\item handlers - which may be used by this role, to implement callback mechanism,.
-\item defaults - default variables for the role.
-\item vars - other variables for the role.
-\item files - which can be deployed via this role.
-\item templates - templates which can be deployed via this role.
-\item meta - meta data for this role.
-\end{itemize}
-
-We leveraged mostly just {\tt tasks} and {\tt vars} to reach our goal. 
 
 \section{Implementation}
 We defined a {\tt System-Collector} role, able to perform all the different tasks needed to gather machine states, and a single playbook {\tt collect.yml} that would apply in parallel the {\tt System-Collector} role to all the hosts in the cyber range.  
