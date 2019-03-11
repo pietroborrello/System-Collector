@@ -1,4 +1,4 @@
-installed_packages_cmd: apk -v info | awk 'BEGIN{print "Name,Version"}; {print}' | sed 's/-\([[:digit:]].*\)-r.$/,\1/'
+installed_packages_cmd: apk -v info | awk 'BEGIN{print "Name,Version"}; {print}' | sed 's/-\([[:digit:]].*\)-r[:digit:]]\+$/,\1/'
 
 firewall_rules_cmd: iptables-save
 
