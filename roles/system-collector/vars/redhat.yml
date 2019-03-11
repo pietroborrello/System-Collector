@@ -1,4 +1,4 @@
-installed_packages_cmd: yum -C list installed | awk 'BEGIN{print "Name,Version"}; {if(ok==1) {print $1","$2}}; /Installed Packages/ {ok=1};' | sed 's/\...*,/,/; s/,[[:digit:]]\+:/,/; s/-.*\.el[[:digit:]]\+$//'
+installed_packages_cmd: yum -C list installed | awk 'BEGIN{print "Name,Version"}; {if(ok==1) {print $1","$2}}; /Installed Packages/ {ok=1};' | sed 's/\...*,/,/; s/,[[:digit:]]\+:/,/; s/,\([^-]*\)-.*$/,\1/'
 
 firewall_rules_cmd: iptables-save
 
